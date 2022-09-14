@@ -1,40 +1,35 @@
 import { useEffect, useState } from "react";
-import dados from "./dados/dadosFake";
+import ListadeMonstros from "./components/listadeMonstros";
+import ButtonLimpar from "./components/buttonLimpar";
 
 function App() {
+  
+  const [dados, setDados] = useState([]);
 
-  const [dadosFake, setDadosFake] = useState(dados); //olhar
+  const apagarDados = () => {
+    setDados([]);
+  };
+
+  /*const [dadosFake, setDadosFake] = useState(dados); //olhar
   const apagarDados = () => {
     setDadosFake([]);
   }
+  */
 
   useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/users')
+      .then((response) => response.json())
+      .then((dadosAPI) => setDados(dadosAPI.slice(0, 5))); //slice: deixar só 5 gatos
   }, [])
 
   return (
     <main>
-      <section className ="container">
-        <h1>{dadosFake.length} Gatos</h1>
+      <section className="container">
+        <h1>{dados.length} monstros</h1>
 
-        {
-          dadosFake.map((objeto) => {
-            return <article key={objeto.id} className="monstros">
-            <img src={objeto.image} alt={objeto.name} />
-            <div>
-              <h2>{objeto.name}</h2>
-              <p>{objeto.email}</p>
-            </div>
-          </article>
-          })
-        }
-                
-        <button class="btn-azul" type="button" 
-        onClick={() =>{
-          console.log("clicando aqui");
-          setDadosFake([])
-        }}>limpar monstros</button>
+        <ListadeMonstros dados={dados} />
 
+        <ButtonLimpar apagarDados={apagarDados} />
       </section>
     </main>
   );
